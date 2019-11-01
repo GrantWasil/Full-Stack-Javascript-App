@@ -1,8 +1,8 @@
 import config from './config';
 
 export default class Data {
-    // Check Data.js to add authentication
-    api(path, method = 'GET', body = null) {
+
+    api(path, method = 'GET', body = null, requiresAuth = false, credentials = null) {
         const url = config.apiBaseUrl + path;
 
         const options = {
@@ -16,16 +16,21 @@ export default class Data {
             options.body = JSON.stringify(body);
         }
 
-        // Check Data.js to add authentication
+        if (requiresAuth) {
+            const encodedCredentials = bota(`${credentials.email}:${credentials.password}`);
+
+            options.headers['Authorization'] = `Basic ${encodedCredentials}`;
+        }
 
         return fetch(url, options);
     }
 
-
-    async getCourses() {
-        const response = await this.api(`/courses`, `GET`, null);
-        if (response === 200) {
+    async getUser(email, password) {
+        const response = await this.api('/users', 'GET', null, true, { email, password});
+        if (response.status === 200) {
             return response.json().then(data => data); 
+        } else if (response.status === 401) {
+            return null;
         } else {
             throw new Error();
         }
