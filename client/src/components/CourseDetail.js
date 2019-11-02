@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
+import Courses from './Courses';
 
 class CourseDetail extends Component {
     constructor(props) {
@@ -28,6 +29,14 @@ class CourseDetail extends Component {
         render() {
             console.log(this.props.match.params.id);
             const {course } = this.state; 
+            let splitMaterials = []
+            // If the course requires materials and has feteched them. Split them into an array
+            if (course.materialsNeeded) {
+                splitMaterials = (course.materialsNeeded.split('*'));
+                splitMaterials.shift();
+            }
+            console.log(splitMaterials);
+            
             return (
                 <div>
                     <div className="actions--bar">
@@ -60,7 +69,7 @@ class CourseDetail extends Component {
                                 <p>{course.description}</p>
                             </div>
                         </div>
-                        <div className="gird-25 grid-right">
+                        <div className="grid-25 grid-right">
                             <div className="course--stats">
                                 <ul className="course--stats--list">
                                     <li className="course--stats--list--item">
@@ -71,7 +80,9 @@ class CourseDetail extends Component {
                                         <h4>Materials Needed</h4>
                                         <ul>
                                             <React.Fragment>
-                                                <li>{course.materialsNeeded}</li>
+                                                {splitMaterials.map(material => 
+                                                  <li>{material}</li>
+                                                )}
                                             </React.Fragment>
                                         </ul>
                                     </li>
