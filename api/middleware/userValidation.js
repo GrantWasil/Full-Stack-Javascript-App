@@ -29,6 +29,8 @@ const userValidation = [
         checkFalsy: true
     })
     .withMessage('Please provide a value for "password"')
+    .equals('confirmPassword')
+    .withMessage('Password does not match confirmation')
     .isLength({
         min: 8,
         max: 20

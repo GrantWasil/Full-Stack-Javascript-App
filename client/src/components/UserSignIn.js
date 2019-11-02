@@ -4,14 +4,14 @@ import Form from './Form';
 
 export default class UserSignIn extends Component {
     state = {
-        email: '', 
+        emailAddress: '', 
         password: '',
         errors: [], 
     }
 
     render () {
         const {
-            email, 
+            emailAddress, 
             password,
             errors
         } = this.state; 
@@ -27,21 +27,27 @@ export default class UserSignIn extends Component {
                         submitButtonText="Sign In"
                         elements={() => (
                             <React.Fragment>
-                                <input 
-                                    id="emailAddress"
-                                    name="emailAddress"
-                                    type="text"
-                                    value={email}
-                                    onChange={this.change}
-                                    placeholder="Email Address" />
-                                <input 
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    value={password}
-                                    onChange={this.change}
-                                    placeholder="Password"
-                                     />
+                                <div>
+                                    <input 
+                                        id="emailAddress"
+                                        name="emailAddress"
+                                        type="text"
+                                        value={emailAddress}
+                                        onChange={this.change}
+                                        placeholder="Email Address" 
+                                        />
+                                </div>
+                                <div>
+                                    <input 
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        value={password}
+                                        onChange={this.change}
+                                        placeholder="Password"
+                                        />
+                                </div>
+                                
                             </React.Fragment>
                         )} 
                     />
@@ -65,11 +71,29 @@ export default class UserSignIn extends Component {
         });
     }
 
-    sumbit = () => {
+    submit = () => {
         const {context} = this.props; 
         const {from} = this.props.location.state || {from:{pathname: '/courses'}};
-        const {email, password} = this.state; 
-        context.actions.signIn(email, password)
+        const {emailAddress, password} = this.state; 
+        context.actions.signIn(emailAddress, password)
+            .then( user => {
+                if(user === null){
+                    this.setState(() => {
+                        return { errors: ['Sign-in was unsuccessful']}
+                    });
+                } else {
+                    this.props.history.push(from);
+                    console.log(`SUCCESS! ${emailAddress} is now signed in!`)
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                this.props.history.push('/courses');
+            })
+        }
+        
+    cancel = () => {
+        this.props.history.push('/courses');
     }
-
 }
+
