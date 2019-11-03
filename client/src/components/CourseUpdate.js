@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import Form from './Form'; 
 
-export default class CreateCourse extends Component {
+export default class CourseUpdate extends Component {
 
     state = {
         title: '',
@@ -9,18 +9,36 @@ export default class CreateCourse extends Component {
         estimatedTime: '',
         materialsNeeded: '',
         userId: '', 
-        errors: []
+        errors: [],
+        course: [], 
     }
 
     componentDidMount(){
-        const {context} = this.props; 
-        const authUser = context.authenticatedUser;
+        this.getThisCourse();
+    }
+
+    async getThisCourse() {
+        const courseId = this.props.match.params.id;
+        try {
+            await fetch(`http://localhost:5000/api/courses/${courseId}`)
+                .then(response => response.json())
+                .then(data => this.setState({course: data}))
+        } catch (err) {
+            console.log(err);
+        }
+        const {course} = this.state;
         this.setState({
-            userId: authUser,
+            title: course.title,
+            description: course.description,
+            estimatedTime: course.estimatedTime,
+            materialsNeeded: course.materialsNeeded,
+            userId: course.userId
         })
     }
 
     render() {
+        const {course} = this.state;
+        console.log(course);
         const {
             title,
             description,
@@ -36,7 +54,7 @@ export default class CreateCourse extends Component {
                     cancel={this.cancel}
                     errors={errors}
                     submit={this.submit} 
-                    submitButtonText="Create Course"
+                    submitButtonText="Update Course"
                     elements={() => (
                         <React.Fragment>
                             <div className="grid-66">
@@ -122,6 +140,7 @@ export default class CreateCourse extends Component {
         const authUser = context.authenticatedUser;
         const authUserPassword = context.authenticatedUserPassword;
         const userId = authUser.userId;
+        const courseId = this.props.match.params.id;
         const {
             title,
             description,
@@ -136,7 +155,7 @@ export default class CreateCourse extends Component {
             materialsNeeded,
             userId,
         };
-    context.data.createCourse(course, authUser.email, authUserPassword)
+    context.data.updateCourse(courseId, course, authUser.email, authUserPassword)
         .then( errors => {
             if (errors.length) {
                 this.setState({errors}); 

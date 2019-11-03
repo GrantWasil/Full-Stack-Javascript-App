@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
+const ReactMarkdown = require('react-markdown')
 
 
 class CourseDetail extends Component {
@@ -11,10 +12,10 @@ class CourseDetail extends Component {
     }
 
         componentDidMount() {
-            this.getAllCourses();
+            this.getThisCourse();
         }
 
-        async getAllCourses() {
+        async getThisCourse() {
             const courseId = this.props.match.params.id;
             try {
                 await fetch(`http://localhost:5000/api/courses/${courseId}`)
@@ -35,14 +36,7 @@ class CourseDetail extends Component {
                 user = (course.User);
             }
             if (authUser && user){
-                match = authUser.userId == course.userId ? true : false
-            }
-            console.log(match)
-            let splitMaterials = []
-            // If the course requires materials and has feteched them. Split them into an array
-            if (course.materialsNeeded) {
-                splitMaterials = (course.materialsNeeded.split('*'));
-                splitMaterials.shift();
+                match = authUser.userId === course.userId ? true : false
             }
             
             return (
@@ -86,24 +80,28 @@ class CourseDetail extends Component {
                             </div>
                         </div>
                         <div className="grid-25 grid-right">
-                            <div className="course--stats">
-                                <ul className="course--stats--list">
-                                    <li className="course--stats--list--item">
-                                        <h4>Estimated Time</h4>
-                                        <h3>{course.estimatedTime}</h3>
-                                    </li>
-                                    <li className="course--stats--list--item">
-                                        <h4>Materials Needed</h4>
-                                        <ul>
-                                            <React.Fragment>
-                                                {splitMaterials.map(material => 
-                                                  <li>{material}</li>
-                                                )}
-                                            </React.Fragment>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </div>
+                                <div className="course--stats">
+                                    <ul className="course--stats--list">
+                                        <li className="course--stats--list--item">
+                                            <h4>Estimated Time</h4>
+                                                <h3>
+                                                    <ReactMarkdown
+                                                        source={course.estimatedTime}
+                                                    />
+                                                </h3>
+                                        </li>
+                                        <li className="course--stats--list--item">
+                                            <h4>Materials Needed</h4>
+                                            <ul>
+                                                <React.Fragment>
+                                                    <ReactMarkdown
+                                                            source={course.materialsNeeded}
+                                                        />
+                                                </React.Fragment>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
                         </div>
                     </div>
                 </div> 
