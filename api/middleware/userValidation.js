@@ -29,13 +29,19 @@ const userValidation = [
         checkFalsy: true
     })
     .withMessage('Please provide a value for "password"')
-    .equals('confirmPassword')
-    .withMessage('Password does not match confirmation')
     .isLength({
         min: 8,
         max: 20
     })
     .withMessage('Please provide a value for "password" that is between 8 and 20 characters in length'),
+    check('confirmPassword')
+    .exists({
+        checkNull: true,
+        checkFalsy: true
+    })
+    .withMessage('Please provide a value for "Confirm Password')
+    .equals('password')
+    .withMessage('Password does not match confirmation')
 ]
 
 module.exports = userValidation;

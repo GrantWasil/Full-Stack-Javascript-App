@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import Courses from './Courses';
+
 
 class CourseDetail extends Component {
     constructor(props) {
@@ -16,7 +16,6 @@ class CourseDetail extends Component {
 
         async getAllCourses() {
             const courseId = this.props.match.params.id;
-            console.log(courseId);
             try {
                 await fetch(`http://localhost:5000/api/courses/${courseId}`)
                     .then(response => response.json())
@@ -27,21 +26,31 @@ class CourseDetail extends Component {
         }
 
         render() {
-            console.log(this.props.match.params.id);
-            const {course } = this.state; 
+            const {context} = this.props;
+            const {course } = this.state;
+            const authUser = context.authenticatedUser;
+            let user = []
+            let match; 
+            if (course.User) {
+                user = (course.User);
+            }
+            if (authUser && user){
+                match = authUser.userId == course.userId ? true : false
+            }
+            console.log(match)
             let splitMaterials = []
             // If the course requires materials and has feteched them. Split them into an array
             if (course.materialsNeeded) {
                 splitMaterials = (course.materialsNeeded.split('*'));
                 splitMaterials.shift();
             }
-            console.log(splitMaterials);
             
             return (
                 <div>
                     <div className="actions--bar">
                         <div className="bounds">
                             <div className="grid-100">
+                                {match ?  
                                 <React.Fragment>
                                     <span>
                                         <Link to={{pathname: `/courses/${course.id}/update`}} className="button">
@@ -55,6 +64,13 @@ class CourseDetail extends Component {
                                             Return to List
                                         </Link>
                                 </React.Fragment>
+                                : 
+                                <React.Fragment>
+                                        <Link to={{pathname: `/courses/`}} className="button button-secondary">
+                                            Return to List
+                                        </Link>
+                                </React.Fragment>
+                                }
                             </div>
                         </div>
                     </div>
@@ -63,7 +79,7 @@ class CourseDetail extends Component {
                             <div className="course--header">
                                 <h4 className="course--label">Course</h4>
                                 <h3 className="course--title">{course.title}</h3>
-                                <p>By {course.author="HOLD"}</p>
+                                <p>By {user.firstName} {user.lastName}</p>
                             </div>
                             <div className="course--description">
                                 <p>{course.description}</p>

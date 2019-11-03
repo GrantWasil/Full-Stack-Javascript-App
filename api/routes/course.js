@@ -4,7 +4,7 @@ const {
     models
 } = require('../db');
 const {
-    Course
+    Course, User
 } = models;
 
 // Course Validation Middleware 
@@ -39,7 +39,19 @@ router.get('/courses', asyncHandler(async (req, res) => {
 
 // Route that returns a single course
 router.get('/courses/:id', asyncHandler(async (req, res) => {
-    const course = await Course.findByPk(req.params.id);
+    const course = await Course.findByPk(req.params.id, {
+        attributes: { 
+            include: ['id', 'title', 'description', 'estimatedTime', 'materialsNeeded'],
+            exclude: ['createdAt', 'updatedAt']
+        },
+        include: [{
+            model: User,
+            attributes: {
+                include:['id','firstName','lastName','emailAddress'],
+                exclude:['password','createdAt','updatedAt']
+            }
+        }],
+    });
     if (course) {
         res.status(200).json(course);
     } else {
