@@ -32,4 +32,4 @@ Courses are protected from users who don't own them
 
 
 ## Contribute
-Since I am a newer developer, I am open to feedback regarding my projects. Please feel free to open a ticket or to contact me directly.
+Since I am a newer developer, I would love your feedback regarding my projects. Please feel free to open a ticket or to contact me directly.
