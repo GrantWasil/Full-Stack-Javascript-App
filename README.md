@@ -7,7 +7,7 @@ This was the final project of the Team Treehouse Fullstack Javascript tech-tegre
 ## How to use
 Download the files and browse to your local location 
 1. Open a Command Prompt or Terminal and enter into "api" folder. 
-2. Run ### 'npm install' 
+2. Run ### `npm install`
 
 ## Tech/framework used
 
