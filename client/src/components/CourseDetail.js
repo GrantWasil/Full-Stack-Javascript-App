@@ -56,7 +56,7 @@ class CourseDetail extends Component {
                                         <Link to={{pathname: `/courses/${course.id}/update`}} className="button">
                                             Update Course
                                         </Link>
-                                        <Link to={{pathname: `/courses/${course.id}/delete`}} className="button">
+                                        <Link to={{pathname: `/courses/`}} className="button" onClick={this.delete}>
                                             Delete Course
                                         </Link>
                                     </span>
@@ -110,6 +110,28 @@ class CourseDetail extends Component {
 
             );
         }
+
+        delete = () => {
+            const {context} = this.props; 
+            const authUser = context.authenticatedUser;
+            const authUserPassword = context.authenticatedUserPassword; 
+            const courseId = this.props.match.params.id;
+
+            console.log(courseId);
+            context.data.deleteCourse(courseId, authUser.email, authUserPassword)
+                .then( errors => {
+                    if(errors.length){
+                        this.setState({errors})
+                    } else {
+                        this.props.history.push('/courses'); 
+                    }
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.props.history.push('/error');
+                });
+        }
+
     }
 
 export default CourseDetail;
